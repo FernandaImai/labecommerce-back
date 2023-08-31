@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start":"tsc && node ./build/index.js"
@@ -14,4 +15,4 @@
     "@types/node": "^20.5.7",
     "typescript": "^5.2.2"
   }
-}
+
