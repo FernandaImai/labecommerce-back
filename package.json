@@ -1,0 +1,17 @@
+{
+  "name": "labecommerce-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "clear && node ./index.js",
+    "par-ou-impar":"clear && node ./exercicios/par-ou-impar.js",
+    "process-argv":"clear && node ./exercicios/process-argv.js",
+    "pedra-papel-tesoura": "clear && node ./exercicios/pedra-papel-tesoura.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
