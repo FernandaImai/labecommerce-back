@@ -49,9 +49,16 @@ app.get("/ping", (req: Request, res: Response) => {
   res.send("Pong!");
 });
 
-app.get('/users',(req:Request, res:Response) =>{
+app.get('/users',(req:Request, res:Response): void =>{
+  try{
   const result: TUsers[] = users;
   res.status(200).send(result)
+}catch(error){
+  if(error instanceof Error){
+    res.send(error.message)
+}
+}
+
 })
 
 //get de all products, junto com getProductByName
@@ -62,24 +69,53 @@ app.get('/users',(req:Request, res:Response) =>{
 // })
 
 app.get('/products',(req:Request, res: Response) =>{
+  try{
   const query:string = req.query.q as string;
   const allProducts: TProducts[]=products
 
-  if(!query){
-  return res.status(200).send(allProducts)
+  if (query.trim().length === 0) {
+    res.statusCode = 400
+    throw new Error ("O parâmetro deve conter pelo menos um caractere. ")
+   }else{
+   const productsByName: TProducts[]= products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()))
+   res.status(200).send(productsByName)
+ } 
 
-}else{
-  const productsByName: TProducts[]= products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()))
-  res.status(200).send(productsByName)
+ if(!query){
+  res.status(200).send(allProducts)
+ }
+ 
 
-} 
+}catch(error){
+  if(error instanceof Error){
+    res.send(error.message)
+}
+
+}
 })
 
-app.post('/users', (req:Request, res:Response) =>{
+app.post('/users', (req:Request, res:Response): void =>{
 
+  try{
 
   const {id, name, email, password}: TUsers = req.body
 
+  if(!id || !email || !name || !password ){
+    res.statusCode = 400
+    throw new Error ("Dados inválidos")
+  }
+
+  if(typeof id !== 'string' || typeof name !== 'string' || typeof email !== 'string' || typeof password !== 'string'){
+    res.statusCode = 400
+    throw new Error ("Dados inválidos. Preencher o campos no formato correto ('string').")
+  }
+
+  // Verificar se a ID ou e-mail já existem na lista de usuários
+  const existingUser = users.find((user) => user.id === id || user.email === email);
+  if (existingUser) {
+    res.statusCode = 400
+    throw new Error ('ID ou e-mail já existem')
+  }
   const newUser : TUsers={
       id,
       name,
@@ -89,12 +125,34 @@ app.post('/users', (req:Request, res:Response) =>{
 
   users.push(newUser)
   res.status(201).send('Cadastro registrado com sucesso')
+}catch(error){
+  if(error instanceof Error){
+    res.send(error.message)
+}
+}
 })
 
-app.post('/products', (req:Request, res:Response) =>{
+app.post('/products', (req:Request, res:Response): void =>{
 
-
+try{
   const {id, name, price, description, imageUrl}: TProducts = req.body
+
+  if(!id || !name || !price || !description || !imageUrl ){
+    res.statusCode = 400
+    throw new Error ("Dados inválidos")
+  }
+
+  if(typeof id !== 'string' || typeof name !== 'string' || typeof price !== 'number' || typeof description !== 'string'|| typeof imageUrl !== 'string' ){
+    res.statusCode = 400
+    throw new Error ("Dados inválidos. Preencher o campos no formato correto (price:'number' e demais dados 'string').")
+  }
+
+    // Verifique se a ID já existe na lista de produtos
+    const existingProduct = products.find((product) => product.id === id);
+    if (existingProduct) {
+      res.statusCode = 400
+      throw new Error ('ID já existe')
+    }
 
   const newProduct : TProducts={
       id,
@@ -106,48 +164,63 @@ app.post('/products', (req:Request, res:Response) =>{
 
   products.push(newProduct)
   res.status(201).send('Produto registrado com sucesso')
+}catch(error){
+  if(error instanceof Error){
+    res.send(error.message)
+}
+}
 })
-
-
-
 
 
 //delete users
 
-app.delete("/users/:id", (req: Request, res: Response) => {
-  const id = req.params.id;
-  const indexToDelete = users.findIndex((user) => user.id === id);
+app.delete("/users/:id", (req: Request, res: Response): void => {
+  try{
+  const id: string = req.params.id;
+  const indexToDelete: number = users.findIndex((user) => user.id === id);
 
   if (indexToDelete !== -1) {
     users.splice(indexToDelete, 1);
   } else {
-    console.log("Nada foi deletado!");
+    res.statusCode = 404
   }
 
   res.status(200).send({ message: "User apagado com sucesso" });
+
+}catch(error){
+  if(error instanceof Error){
+    res.send(error.message)
+}
+}
 });
 
 
 //delete products
 
 
-app.delete("/products/:id", (req: Request, res: Response) => {
-    const id = req.params.id;
-    const indexToDelete = products.findIndex((product) => product.id === id);
+app.delete("/products/:id", (req: Request, res: Response):void => {
+  try{
+    const id: string = req.params.id;
+    const indexToDelete: number = products.findIndex((product) => product.id === id);
   
     if (indexToDelete !== -1) {
       products.splice(indexToDelete, 1);
     } else {
-      console.log("Nada foi deletado!");
+      res.statusCode = 404
     }
   
     res.status(200).send({ message: "Produto apagado com sucesso" });
+  }catch(error){
+    if(error instanceof Error){
+      res.send(error.message)
+  }
+  }
   });
   
 
-  app.put("/products/:id", (req: Request, res: Response) => {
-
-    const id= req.params.id 
+  app.put("/products/:id", (req: Request, res: Response):void => {
+try{
+    const id: string= req.params.id 
     const newName = req.body.name as string | undefined
     const newPrice = req.body.price as number | undefined
     const newDescription = req.body.description as string | undefined
@@ -168,9 +241,11 @@ app.delete("/products/:id", (req: Request, res: Response) => {
     } else {
         res.status(404).send({ message: 'Produto não encontrado' });
     }
-
-
-  
+  }catch(error){
+    if(error instanceof Error){
+      res.send(error.message)
+  }
+  }
 })
 
 
