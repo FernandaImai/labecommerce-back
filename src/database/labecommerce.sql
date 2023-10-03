@@ -7,7 +7,7 @@ CREATE TABLE users (
     created_at TEXT DEFAULT(DATETIME('localtime', 'now')) NOT NULL
 );
 
---get all users
+
 SELECT * FROM users;
 
 INSERT INTO users (id, name, email, password, created_at) 
@@ -31,7 +31,7 @@ CREATE TABLE products (
     image_url TEXT NOT NULL
 );
 
---get all products
+
 SELECT * FROM products;
 
 INSERT INTO products (id, name, price, description, image_url) 
@@ -41,34 +41,3 @@ VALUES ('prod001', 'Mouse gamer', 250, 'Melhor mouse do mercado!','https://picsu
 ('prod004', 'Fone Gamer', 150, 'Headset Gamer, Quantum 100 - Preto', 'https://www.amazon.com.br/Fone-Ouvido-JBL-Quantum-Gamer/dp/B083X24CFF/ref=asc_df_B083X24CFF/?tag=googleshopp00-20&linkCode=df0&hvadid=379720664788&hvpos=&hvnetw=g&hvrand=10605277430671477496&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-921119917181&psc=1'),
 ('prod005', 'Teclado Gamer', 180, 'HyperX Teclado Gamer HyperX Alloy Core RGB, ABNT2', 'https://www.amazon.com.br/HyperX-Teclado-Gamer-Alloy-ABNT2/dp/B07TV9B7Z3/ref=asc_df_B07TV9B7Z3/?tag=googleshopp00-20&linkCode=df0&hvadid=379726010793&hvpos=&hvnetw=g&hvrand=4057279778435855790&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-906902484847&psc=1');
 
---Get all Products (funcionalidade 2)
-SELECT * FROM products
-WHERE name LIKE '%gamer%';
-
---Create User
-
-  INSERT INTO users (id, name, email, password, created_at)
-  VALUES('u004', 'Adriana', 'adriana@email.com', '123456',(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')));
-
---Create Product
-
-INSERT INTO products (id, name, price, description, image_url)
-VALUES('prod006', 'Pen Drive', 27, 'Sandisk Pen drive USB Cruzer Blade, 64 GB, preto/vermelho', 'https://www.amazon.com.br/Sandisk-Cruzer-Blade-Flash-SDCZ50-064G-A46/dp/B00DGHQ0D0/ref=asc_df_B00DGHQ0D0/?tag=googleshopp00-20&linkCode=df0&hvadid=379792667186&hvpos=&hvnetw=g&hvrand=16000384201731717995&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-923425979915&psc=1');
-
---Delete User by id
-DELETE FROM users WHERE id='u004';
-
---Delete Product by id
-
-DELETE FROM products WHERE id='prod006';
-
---Edit Product by id
-UPDATE products SET price=199.99 WHERE id='prod004';
-
-UPDATE products
-SET 
-  name = 'Pen Drive',
-  price = 26.99,
-  description = 'Sandisk Pen drive USB Cruzer Blade, 64 GB, preto/vermelho',
-  image_url = 'https://www.amazon.com.br/Sandisk-Cruzer-Blade-Flash-SDCZ50-064G-A46/dp/B00DGHQ0D0/ref=asc_df_B00DGHQ0D0/?tag=googleshopp00-20&linkCode=df0&hvadid=379792667186&hvpos=&hvnetw=g&hvrand=16000384201731717995&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-923425979915&psc=1'
-WHERE id = 'prod005';
