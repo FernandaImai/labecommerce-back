@@ -93,6 +93,80 @@ CREATE TABLE purchases (
   total_price REAL NOT NULL,
   created_at DATETIME DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')),
 FOREIGN KEY (buyer) REFERENCES users (id)
+);
+
+DROP TABLE purchases;
+
+INSERT INTO purchases (id, buyer, total_price) VALUES 
+('001', 'u001',300),
+('002','u002',500);
+
+SELECT * FROM purchases;
+
+UPDATE purchases SET total_price=149.99 WHERE id='001';
+
+SELECT 
+p.id AS idCompra,
+buyer,
+name,
+email,
+total_price,
+p.created_at
+FROM users AS u
+INNER JOIN purchases AS p
+ON u.id = p.buyer;
+
+ --Get All Users--
+  SELECT * FROM users;
+
+  --Get All Products--
+  SELECT * FROM products;
+
+  --Get all Products (funcionalidade 2)--
+
+  SELECT * FROM products WHERE name LIKE  '%gamer%';
+
+  --Exercício 2--
+
+  --Create User--
+
+  INSERT INTO users (id, name, email, password, created_at)
+  VALUES('u004', 'Adriana', 'adriana@email.com', '7891027',(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')));
+
+--Create Product--
+
+INSERT INTO products (id, name, price, description, image_url)
+VALUES('prod006', 'Pen Drive', 34.99, 'Sandisk Pen drive USB Cruzer Blade, 64 GB', 'https://www.amazon.com.br/Sandisk-Cruzer-Blade-Flash-SDCZ50-064G-A46/dp/B00DGHQ0D0/ref=asc_df_B00DGHQ0D0/?tag=googleshopp00-20&linkCode=df0&hvadid=379792667186&hvpos=&hvnetw=g&hvrand=9094649278711680985&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-923425979915&psc=1');
+
+--Delete User by id--
+
+DELETE FROM users WHERE id='u004';
+
+--Delete Product by id--
+
+DELETE FROM products WHERE id='prod006';
+
+--Edit Product by id--
+
+UPDATE products SET price=149.99 WHERE id='prod004';
+
+--  make the query edit all columns of the item --
+
+UPDATE products
+SET 
+  name = 'Cartão de Memória',
+  price = 59.99,
+  description = 'SanDisk Cartão microSDXC Ultra SDSQUNS-128G-GN6MN 128GB 80MB/s',
+  image_url = 'https://www.amazon.com.br/SanDisk-Cart%C3%A3o-SDSQUNS-128G-GN6MN-Classe-microSDXC/dp/B07HHD7C7T/ref=asc_df_B07HHD7C7T/?tag=googleshopp00-20&linkCode=df0&hvadid=379751635837&hvpos=&hvnetw=g&hvrand=11167178578804736813&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=1001773&hvtargid=pla-575048341642&psc=1'
+WHERE id = 'prod005';
+
+
+CREATE TABLE purchases (
+  id TEXT PRIMARY KEY UNIQUE NOT NULL,
+  buyer TEXT NOT NULL,
+  total_price REAL NOT NULL,
+  created_at DATETIME DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')),
+FOREIGN KEY (buyer) REFERENCES users (id)
 ON UPDATE CASCADE 
 ON DELETE CASCADE 
 );
