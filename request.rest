@@ -4,13 +4,55 @@ GET http://localhost:3003/users
 GET http://localhost:3003/products?name=gamer
 ###
 
+GET http://localhost:3003/products
+###
+
+GET http://localhost:3003/purchases
+###
+
 POST http://localhost:3003/users
 Content-Type: application/json
 
 {
-    "id": "u004",
-    "name": "Adriana Sayuri Imai",
-    "email":"adriana@email.com",
+    "id": "u005",
+    "name": "Patrícia Hitomi Imai",
+    "email":"patricia@email.com",
     "password":"654321"
 }
+###
+
+POST http://localhost:3003/products
+Content-Type: application/json
+
+{
+    "id": "prod006",
+    "name": "Pilha recarregável",
+    "price": 79.99,
+    "description": "Recarregáveis AA e AAA Com 4 Pilhas AA",
+    "image_url": "https://picsum.photos/seed/pilhas/400"
+}
+###
+
+POST http://localhost:3003/purchases
+Content-Type: application/json
+
+{
+    "id": "c004",
+    "buyer": "u001",
+    "total_price":299
+}
+###
+
+PUT http://localhost:3003/products/prod001
+Content-Type: application/json
+
+{
+    "name": "Mouse Gamer",
+    "price": 250,
+    "description": "Melhor mouse do mercado!",
+    "image_url": "https://picsum.photos/seed/mouse/400"
+}
+###
+
+DELETE  http://localhost:3003/purchases/c004
 ###
