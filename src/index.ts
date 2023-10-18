@@ -1,9 +1,7 @@
-
-
-
 import {users, products, createUser, getAllUsers, createProduct, getAllProducts,searchProductsByName} from './database'
 import express, { Request, Response} from 'express';
 import cors from 'cors';
+import { db } from './database/knex'
 import { TProducts, TUsers } from './types';
 
 // Criar um novo usuário
@@ -49,9 +47,9 @@ app.get("/ping", (req: Request, res: Response) => {
   res.send("Pong!");
 });
 
-app.get('/users',(req:Request, res:Response): void =>{
+app.get("/users", async(req:Request, res:Response) =>{
   try{
-  const result: TUsers[] = users;
+  const result: TUsers= await db.raw(`SELECT * FROM users`) ;
   res.status(200).send(result)
 }catch(error){
   if(error instanceof Error){
@@ -68,22 +66,36 @@ app.get('/users',(req:Request, res:Response): void =>{
 //   res.status(200).send(result)
 // })
 
-app.get('/products',(req:Request, res: Response) =>{
+app.get('/products',async(req:Request, res: Response) =>{
   try{
-  const query:string = req.query.q as string;
-  const allProducts: TProducts[]=products
+  const query:string = req.query.name as string;
 
-  if (query.trim().length === 0) {
-    res.statusCode = 400
-    throw new Error ("O parâmetro deve conter pelo menos um caractere. ")
-   }else{
-   const productsByName: TProducts[]= products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()))
-   res.status(200).send(productsByName)
- } 
+  if (query && query.trim().length === 0) {
+    res.status(400).send("O parâmetro 'name' deve conter pelo menos um caracter.");
+    return;
+  }
 
- if(!query){
-  res.status(200).send(allProducts)
- }
+  if (query) {
+    // Se a query "name" estiver presente, realize a busca no banco de dados.
+    const result:TProducts = await db.raw('SELECT * FROM products WHERE name LIKE ?', [`%${query}%`]);
+    res.status(200).send(result);
+  } else {
+    // Caso contrário, retorne todos os produtos.
+    const allProducts = await db.raw('SELECT * FROM products');
+    res.status(200).send(allProducts);
+  }
+
+//   if (query.trim().length === 0) {
+//     res.statusCode = 400
+//     throw new Error ("O parâmetro deve conter pelo menos um caractere. ")
+//    }else{
+//    const productsByName: TProducts[]= products.filter(product => product.name.toLowerCase().includes(query.toLowerCase()))
+//    res.status(200).send(productsByName)
+//  } 
+
+//  if(!query){
+//   res.status(200).send(allProducts)
+//  }
  
 
 }catch(error){
@@ -94,7 +106,7 @@ app.get('/products',(req:Request, res: Response) =>{
 }
 })
 
-app.post('/users', (req:Request, res:Response): void =>{
+app.post('/users', async (req:Request, res:Response) =>{
 
   try{
 
@@ -111,20 +123,35 @@ app.post('/users', (req:Request, res:Response): void =>{
   }
 
   // Verificar se a ID ou e-mail já existem na lista de usuários
-  const existingUser = users.find((user) => user.id === id || user.email === email);
-  if (existingUser) {
-    res.statusCode = 400
-    throw new Error ('ID ou e-mail já existem')
-  }
-  const newUser : TUsers={
-      id,
-      name,
-      email,
-      password,
-  }
+  // const existingUser = users.find((user) => user.id === id || user.email === email);
+  // if (existingUser) {
+  //   res.statusCode = 400
+  //   throw new Error ('ID ou e-mail já existem')
+  // }
 
-  users.push(newUser)
-  res.status(201).send('Cadastro registrado com sucesso')
+  const [isId] = await db.raw(`SELECT id FROM users WHERE id = '${id}'`)
+  // console.log(isId);
+  
+  if(isId){
+    //não posso cadastrar
+    res.status(400)
+    throw new Error ('Id já existe!')
+  }else{
+    //posso cadastrar
+    await db.raw(`INSERT INTO users (id,name,email,password)
+    VALUES('${id}', '${name}', '${email}','${password}')
+    `)
+    res.status(201).send('Cadastro registrado com sucesso')
+  }
+  
+//   const newUser : TUsers={
+//     id,
+//     name,
+//     email,
+//     password
+// }
+
+  
 }catch(error){
   if(error instanceof Error){
     res.send(error.message)
@@ -148,21 +175,21 @@ try{
   }
 
     // Verifique se a ID já existe na lista de produtos
-    const existingProduct = products.find((product) => product.id === id);
-    if (existingProduct) {
-      res.statusCode = 400
-      throw new Error ('ID já existe')
-    }
+    // const existingProduct = products.find((product) => product.id === id);
+    // if (existingProduct) {
+    //   res.statusCode = 400
+    //   throw new Error ('ID já existe')
+    // }
 
-  const newProduct : TProducts={
-      id,
-      name,
-      price,
-      description,
-      imageUrl
-  }
+  // const newProduct : TProducts={
+  //     id,
+  //     name,
+  //     price,
+  //     description,
+  //     imageUrl
+  // }
 
-  products.push(newProduct)
+  // products.push(newProduct)
   res.status(201).send('Produto registrado com sucesso')
 }catch(error){
   if(error instanceof Error){

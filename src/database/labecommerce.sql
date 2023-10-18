@@ -4,19 +4,17 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     password TEXT NOT NULL,
-    created_at TEXT DEFAULT(DATETIME('localtime', 'now')) NOT NULL
+    created_at DATETIME DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
 );
 
 
 SELECT * FROM users;
 
-INSERT INTO users (id, name, email, password, created_at) 
-VALUES ('u001', 'Fernanda Shizue Imai', 'fernanda@email.com', '012345',(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
-),
-('u002', 'Airton Menadro Jr', 'airton@email.com', '123456',(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
-),
-('u003', 'Belinha', 'belinha@email.com', '876543',(strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
-);
+INSERT INTO users (id, name, email, password) 
+VALUES ('u001', 'Fernanda Shizue Imai', 'fernanda@email.com', '012345'),
+('u002', 'Airton Menadro Jr', 'airton@email.com', '123456')
+,
+('u003', 'Belinha', 'belinha@email.com', '876543');
 
 UPDATE users SET created_at =''  WHERE id= 'u003';
 
