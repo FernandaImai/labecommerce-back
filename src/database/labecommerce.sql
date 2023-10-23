@@ -182,6 +182,15 @@ INSERT INTO purchases (id, buyer, total_price) VALUES
 
 SELECT * FROM purchases;
 
+
+PRAGMA foreign_keys = OFF
+DELETE FROM purchases WHERE id='c0011';
+
+
+PRAGMA foreign_keys = OFF;
+DELETE FROM purchases WHERE id = 'c0011';
+PRAGMA foreign_keys = ON;
+
 UPDATE purchases SET total_price=149.99 WHERE id='001';
 
 SELECT 
@@ -211,6 +220,8 @@ INSERT INTO purchases_products VALUES
 ('c001', 'prod004', 2),
 ('c002', 'prod002',1),
 ('c003', 'prod005',3);
+
+SELECT * FROM purchases_products;
 
 SELECT 
 pp.purchase_id,
